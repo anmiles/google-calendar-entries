@@ -1,6 +1,6 @@
 {
   "name": "google-calendar-entries",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Get all google calendar entries",
   "keywords": [
     "google",
