@@ -55,7 +55,7 @@ describe('src/lib/events', () => {
 	describe('getEvents', () => {
 		const timeMax = `${new Date().getFullYear()}-12-31T21:00:00.000Z`;
 
-		it('should get calendar API with no persistence', async () => {
+		it('should get calendar API', async () => {
 			await original.getEvents(profile);
 
 			expect(getCalendarAPI).toBeCalledWith(profile);
