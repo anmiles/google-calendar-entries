@@ -1,5 +1,5 @@
 import type GoogleApis from 'googleapis';
-import { calendar } from '@anmiles/google-api-wrapper';
+import { getCalendarAPI, getItems } from '@anmiles/google-api-wrapper';
 import _ from 'lodash';
 import { error } from './logger';
 
@@ -27,7 +27,8 @@ async function getCalendarsAndEvents(profile: string, calendarName?: string): Pr
 	events: Array<GoogleApis.calendar_v3.Schema$Event>,
 	calendars: Array<GoogleApis.calendar_v3.Schema$CalendarListEntry>
 }> {
-	const calendars = await calendar.getCalendars(profile, {});
+	const calendarAPI = await getCalendarAPI(profile);
+	const calendars   = await getItems(calendarAPI.calendarList, {}, { hideProgress : true });
 
 	if (calendars.length === 0) {
 		error(`There are no available calendars for profile '${profile}'`);
@@ -39,10 +40,16 @@ async function getCalendarsAndEvents(profile: string, calendarName?: string): Pr
 		error(`Unknown calendar '${calendarName}' for profile '${profile}'`);
 	}
 
-	const endOfYear         = new Date(new Date().getFullYear() + 1, 0, 1).toISOString();
-	const allEventsPromises = selectedCalendars.map((c) => calendar.getEvents(profile, { calendarId : c.id || undefined, singleEvents : true, timeMax : endOfYear }));
-	const allEvents         = await Promise.all(allEventsPromises);
-	const events            = _.flatten(allEvents);
+	const endOfYear = new Date(new Date().getFullYear() + 1, 0, 1).toISOString();
+
+	const allEventsPromises = selectedCalendars.map((c) => getItems(
+		calendarAPI.events,
+		{ calendarId : c.id || undefined, singleEvents : true, timeMax : endOfYear },
+		{ hideProgress : true },
+	));
+
+	const allEvents = await Promise.all(allEventsPromises);
+	const events    = _.flatten(allEvents);
 
 	return { calendars, events };
 }

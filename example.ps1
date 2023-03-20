@@ -21,13 +21,13 @@ Function Decode866($text) {
 	return [System.Text.Encoding]::UTF8.GetString($bytes)
 }
 
-Write-Host "Staring..."
-Write-Host "Downloading..."
+Write-Host "Logging in..."
+node ./dist/login.js
 $result = Decode866 (node ./dist/index.js)
 
 Write-Host "Processing..."
 $all_events = $result | ConvertFrom-Json
-$events = $all_events | ? { $_.calendar.accessRole -ne "reader" -and $calendars.Contains($_.calendar.summary) -and $_.status -eq "confirmed" }
+$events = $all_events | ? { $_.calendar -and $_.calendar.accessRole -ne "reader" -and $calendars.Contains($_.calendar.summary) -and $_.status -eq "confirmed" }
 
 $events | % {
 	$_ | Add-Member -MemberType NoteProperty -Name dateTime -Value ""
@@ -35,9 +35,16 @@ $events | % {
 	if ("date" -in $_.start.PSobject.Properties.Name) { $_.dateTime = [DateTime]::Parse($_.start.date) }
 }
 
-$monday = [DateTime]::Today.AddDays(1 - [DateTime]::Today.DayOfWeek.value__)
+$monday = [DateTime]::Today.AddDays(-[DateTime]::Today.AddDays(-1).DayOfWeek.value__)
 
-Write-Host "Events until this week:"($events | ? { $_.dateTime -lt $monday }).Length -ForegroundColor Yellow
-Write-Host "Events until next week:"($events | ? { $_.dateTime -lt $monday.AddDays(7) }).Length -ForegroundColor Yellow
-Write-Host "Events until now:"($events | ? { $_.dateTime -lt [DateTime]::Now }).Length -ForegroundColor Yellow
+$untilThisWeek = $events | ? { $_.dateTime -lt $monday }
+$untilNextWeek = $events | ? { $_.dateTime -lt $monday.AddDays(7) }
+
+Write-Host "Events until next week: $($untilNextWeek.Length)" -ForegroundColor Yellow
+
+if ($untilThisWeek.length) {
+	Write-Host "Events until this week:" -ForegroundColor Yellow
+	$events | ? { $_.dateTime -lt $monday } | % { Write-Host "$($_.dateTime.ToString()) $($_.summary) ($($_.calendar.summary))" }
+}
+
 Write-Host "Done!"

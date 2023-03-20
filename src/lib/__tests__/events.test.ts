@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { calendar } from '@anmiles/google-api-wrapper';
+import { getCalendarAPI, getItems } from '@anmiles/google-api-wrapper';
 import logger from '../logger';
 
 import original from '../events';
@@ -8,11 +8,14 @@ jest.mock<Partial<typeof fs>>('fs', () => ({
 	writeFileSync : jest.fn(),
 }));
 
-jest.mock<{ calendar: Partial<typeof calendar> }>('@anmiles/google-api-wrapper', () => ({
-	calendar : {
-		getEvents    : jest.fn().mockImplementation(async () => eventsList),
-		getCalendars : jest.fn().mockImplementation(async () => calendars),
-	},
+jest.mock('@anmiles/google-api-wrapper', () => ({
+	getCalendarAPI : jest.fn().mockImplementation(async () => api),
+	getItems       : jest.fn().mockImplementation(async (itemsAPI: string) => {
+		switch (itemsAPI) {
+			case api.calendarList: return calendars;
+			case api.events: return events;
+		}
+	}),
 }));
 
 jest.mock<Partial<typeof logger>>('../logger', () => ({
@@ -24,8 +27,13 @@ jest.mock<Partial<typeof logger>>('../logger', () => ({
 
 const profile = 'username';
 
+const api = {
+	calendarList : 'calendarList',
+	events       : 'events',
+};
+
 let calendars: Array<{ id?: string | null | undefined, summary?: string, description?: string, hidden?: boolean }>;
-let eventsList: Array<{ id?: string | null | undefined, summary?: string, organizer?: { email?: string, displayName?: string, self?: boolean} }>;
+let events: Array<{ id?: string | null | undefined, summary?: string, organizer?: { email?: string, displayName?: string, self?: boolean} }>;
 
 beforeEach(() => {
 	calendars = [
@@ -35,7 +43,7 @@ beforeEach(() => {
 		{ id : 'id4', summary : 'calendar 4', description : undefined, hidden : undefined },
 	];
 
-	eventsList = [
+	events = [
 		{ id : 'id1', summary : 'event 1', organizer : { email : 'id1', displayName : 'calendar 1' } },
 		{ id : null, summary : 'event 2', organizer : { email : 'id2', self : true } },
 		{ id : 'id3', summary : 'event 3', organizer : { email : undefined, displayName : undefined } },
@@ -45,10 +53,18 @@ beforeEach(() => {
 
 describe('src/lib/events', () => {
 	describe('getEvents', () => {
+		const timeMax = `${new Date().getFullYear()}-12-31T21:00:00.000Z`;
+
+		it('should get calendar API with no persistence', async () => {
+			await original.getEvents(profile);
+
+			expect(getCalendarAPI).toBeCalledWith(profile);
+		});
+
 		it('should get all calendars', async () => {
 			await original.getEvents(profile);
 
-			expect(calendar.getCalendars).toBeCalledWith(profile, {});
+			expect(getItems).toBeCalledWith(api.calendarList, {}, { hideProgress : true });
 		});
 
 		it('should throw if there are no available calendars', async () => {
@@ -66,21 +82,23 @@ describe('src/lib/events', () => {
 			expect(result).toBeDefined();
 		});
 
-		it('should get events for all calendars', async () => {
+		it('should get events for all calendars without showing progress', async () => {
 			await original.getEvents(profile);
 
-			expect(calendar.getEvents).toBeCalledTimes(4);
-			expect(calendar.getEvents).toBeCalledWith(profile, { calendarId : calendars[0].id });
-			expect(calendar.getEvents).toBeCalledWith(profile, { calendarId : calendars[1].id });
-			expect(calendar.getEvents).toBeCalledWith(profile, { calendarId : undefined });
-			expect(calendar.getEvents).toBeCalledWith(profile, { calendarId : calendars[3].id });
+			expect(getItems).toBeCalledTimes(5);
+			expect(getItems).toBeCalledWith(api.calendarList, { }, { hideProgress : true });
+			expect(getItems).toBeCalledWith(api.events, { calendarId : calendars[0].id, singleEvents : true, timeMax }, { hideProgress : true });
+			expect(getItems).toBeCalledWith(api.events, { calendarId : calendars[1].id, singleEvents : true, timeMax }, { hideProgress : true });
+			expect(getItems).toBeCalledWith(api.events, { calendarId : undefined, singleEvents : true, timeMax }, { hideProgress : true });
+			expect(getItems).toBeCalledWith(api.events, { calendarId : calendars[3].id, singleEvents : true, timeMax }, { hideProgress : true });
 		});
 
-		it('should get events only for selected calendar', async () => {
+		it('should get events only for selected calendar without showing progress', async () => {
 			await original.getEvents(profile, calendars[1].summary);
 
-			expect(calendar.getEvents).toBeCalledTimes(1);
-			expect(calendar.getEvents).toBeCalledWith(profile, { calendarId : calendars[1].id });
+			expect(getItems).toBeCalledTimes(2);
+			expect(getItems).toBeCalledWith(api.calendarList, { }, { hideProgress : true });
+			expect(getItems).toBeCalledWith(api.events, { calendarId : calendars[1].id, singleEvents : true, timeMax }, { hideProgress : true });
 		});
 
 		it('should return events for all calendars', async () => {
