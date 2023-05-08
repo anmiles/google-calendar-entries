@@ -1,14 +1,11 @@
 import googleApiWrapper from '@anmiles/google-api-wrapper';
-import logger from '../logger';
+import logger from '@anmiles/logger';
 import events from '../events';
 
 import app from '../app';
 
-jest.mock<Partial<typeof logger>>('../logger', () => ({
-	log   : jest.fn(),
-	error : jest.fn().mockImplementation((error) => {
-		throw error;
-	}) as jest.Mock<never, any>,
+jest.mock<Partial<typeof logger>>('@anmiles/logger', () => ({
+	log : jest.fn(),
 }));
 
 jest.mock<Partial<typeof googleApiWrapper>>('@anmiles/google-api-wrapper', () => ({

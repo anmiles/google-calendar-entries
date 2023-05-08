@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { getCalendarAPI, getItems } from '@anmiles/google-api-wrapper';
-import logger from '../logger';
+import logger from '@anmiles/logger';
 
 import original from '../events';
 
@@ -18,11 +18,8 @@ jest.mock('@anmiles/google-api-wrapper', () => ({
 	}),
 }));
 
-jest.mock<Partial<typeof logger>>('../logger', () => ({
-	log   : jest.fn(),
-	error : jest.fn().mockImplementation((error) => {
-		throw error;
-	}) as jest.Mock<never, any>,
+jest.mock<Partial<typeof logger>>('@anmiles/logger', () => ({
+	log : jest.fn(),
 }));
 
 const profile = 'username';

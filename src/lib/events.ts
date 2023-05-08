@@ -1,7 +1,6 @@
 import type GoogleApis from 'googleapis';
 import { getCalendarAPI, getItems } from '@anmiles/google-api-wrapper';
 import _ from 'lodash';
-import { error } from './logger';
 
 export { getEvents, getEventsFull };
 export default { getEvents, getEventsFull };
@@ -31,13 +30,13 @@ async function getCalendarsAndEvents(profile: string, calendarName?: string): Pr
 	const calendars   = await getItems(calendarAPI.calendarList, {}, { hideProgress : true });
 
 	if (calendars.length === 0) {
-		error(`There are no available calendars for profile '${profile}'`);
+		throw `There are no available calendars for profile '${profile}'`;
 	}
 
 	const selectedCalendars = calendars.filter((c) => !calendarName || calendarName === c.summary);
 
 	if (selectedCalendars.length === 0) {
-		error(`Unknown calendar '${calendarName}' for profile '${profile}'`);
+		throw `Unknown calendar '${calendarName}' for profile '${profile}'`;
 	}
 
 	const endOfYear = new Date(new Date().getFullYear() + 1, 0, 1).toISOString();
