@@ -34,11 +34,21 @@ const api = {
 let calendars: Array<{ id?: string | null | undefined, summary?: string, description?: string, hidden?: boolean }>;
 let events: Array<{ id?: string | null | undefined, summary?: string, organizer?: { email?: string, displayName?: string, self?: boolean} }>;
 
-const endOfYear = new Date(new Date().getFullYear() + 1, 0, 1).toISOString();
-jest.spyOn(original, 'getEndOfYear').mockReturnValue(endOfYear);
+let toISOStringSpy: jest.SpyInstance;
+let endOfYear: string;
+
+beforeAll(() => {
+	toISOStringSpy = jest.spyOn(Date.prototype, 'toISOString');
+});
 
 beforeEach(() => {
 	jest.setSystemTime(mockDate);
+
+	endOfYear = new Date(new Date().getFullYear() + 1, 0, 1).toISOString();
+
+	toISOStringSpy.mockImplementation(function() {
+		return this.toLocaleString('ru');
+	});
 
 	calendars = [
 		{ id : 'id1', summary : 'calendar 1', description : 'calendar 1 description', hidden : false },
@@ -57,6 +67,10 @@ beforeEach(() => {
 
 afterEach(() => {
 	jest.setSystemTime(new Date());
+});
+
+afterAll(() => {
+	toISOStringSpy.mockRestore();
 });
 
 describe('src/lib/events', () => {
