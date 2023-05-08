@@ -1,6 +1,8 @@
 # google-calendar-entries
 
-Get all google calendar entries
+View and manage google calendar entries
+
+----
 
 ## Installation
 
