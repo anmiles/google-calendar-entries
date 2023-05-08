@@ -93,10 +93,10 @@ describe('src/lib/events', () => {
 
 			expect(getItems).toHaveBeenCalledTimes(5);
 			expect(getItems).toHaveBeenCalledWith(api.calendarList, { }, { hideProgress : true });
-			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : calendars[0].id, singleEvents : true, timeMax: endOfYear }, { hideProgress : true });
-			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : calendars[1].id, singleEvents : true, timeMax: endOfYear }, { hideProgress : true });
-			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : undefined, singleEvents : true, timeMax: endOfYear }, { hideProgress : true });
-			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : calendars[3].id, singleEvents : true, timeMax: endOfYear }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : calendars[0].id, singleEvents : true, timeMax : endOfYear }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : calendars[1].id, singleEvents : true, timeMax : endOfYear }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : undefined, singleEvents : true, timeMax : endOfYear }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : calendars[3].id, singleEvents : true, timeMax : endOfYear }, { hideProgress : true });
 		});
 
 		it('should get events only for selected calendar without showing progress', async () => {
@@ -104,7 +104,7 @@ describe('src/lib/events', () => {
 
 			expect(getItems).toHaveBeenCalledTimes(2);
 			expect(getItems).toHaveBeenCalledWith(api.calendarList, { }, { hideProgress : true });
-			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : calendars[1].id, singleEvents : true, timeMax: endOfYear }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : calendars[1].id, singleEvents : true, timeMax : endOfYear }, { hideProgress : true });
 		});
 
 		it('should return events for all calendars', async () => {
