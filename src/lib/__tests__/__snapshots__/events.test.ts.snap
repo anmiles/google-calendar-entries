@@ -1,119 +1,119 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`src/lib/events getEvents should return events for all calendars 1`] = `
-Array [
-  Object {
+[
+  {
     "id": "id1",
-    "organizer": Object {
+    "organizer": {
       "displayName": "calendar 1",
       "email": "id1",
     },
     "summary": "event 1",
   },
-  Object {
+  {
     "id": null,
-    "organizer": Object {
+    "organizer": {
       "email": "id2",
       "self": true,
     },
     "summary": "event 2",
   },
-  Object {
+  {
     "id": "id3",
-    "organizer": Object {
+    "organizer": {
       "displayName": undefined,
       "email": undefined,
     },
     "summary": "event 3",
   },
-  Object {
+  {
     "id": "id4",
     "organizer": undefined,
     "summary": "event 4",
   },
-  Object {
+  {
     "id": "id1",
-    "organizer": Object {
+    "organizer": {
       "displayName": "calendar 1",
       "email": "id1",
     },
     "summary": "event 1",
   },
-  Object {
+  {
     "id": null,
-    "organizer": Object {
+    "organizer": {
       "email": "id2",
       "self": true,
     },
     "summary": "event 2",
   },
-  Object {
+  {
     "id": "id3",
-    "organizer": Object {
+    "organizer": {
       "displayName": undefined,
       "email": undefined,
     },
     "summary": "event 3",
   },
-  Object {
+  {
     "id": "id4",
     "organizer": undefined,
     "summary": "event 4",
   },
-  Object {
+  {
     "id": "id1",
-    "organizer": Object {
+    "organizer": {
       "displayName": "calendar 1",
       "email": "id1",
     },
     "summary": "event 1",
   },
-  Object {
+  {
     "id": null,
-    "organizer": Object {
+    "organizer": {
       "email": "id2",
       "self": true,
     },
     "summary": "event 2",
   },
-  Object {
+  {
     "id": "id3",
-    "organizer": Object {
+    "organizer": {
       "displayName": undefined,
       "email": undefined,
     },
     "summary": "event 3",
   },
-  Object {
+  {
     "id": "id4",
     "organizer": undefined,
     "summary": "event 4",
   },
-  Object {
+  {
     "id": "id1",
-    "organizer": Object {
+    "organizer": {
       "displayName": "calendar 1",
       "email": "id1",
     },
     "summary": "event 1",
   },
-  Object {
+  {
     "id": null,
-    "organizer": Object {
+    "organizer": {
       "email": "id2",
       "self": true,
     },
     "summary": "event 2",
   },
-  Object {
+  {
     "id": "id3",
-    "organizer": Object {
+    "organizer": {
       "displayName": undefined,
       "email": undefined,
     },
     "summary": "event 3",
   },
-  Object {
+  {
     "id": "id4",
     "organizer": undefined,
     "summary": "event 4",
@@ -122,32 +122,32 @@ Array [
 `;
 
 exports[`src/lib/events getEvents should return events only for selected calendar 1`] = `
-Array [
-  Object {
+[
+  {
     "id": "id1",
-    "organizer": Object {
+    "organizer": {
       "displayName": "calendar 1",
       "email": "id1",
     },
     "summary": "event 1",
   },
-  Object {
+  {
     "id": null,
-    "organizer": Object {
+    "organizer": {
       "email": "id2",
       "self": true,
     },
     "summary": "event 2",
   },
-  Object {
+  {
     "id": "id3",
-    "organizer": Object {
+    "organizer": {
       "displayName": undefined,
       "email": undefined,
     },
     "summary": "event 3",
   },
-  Object {
+  {
     "id": "id4",
     "organizer": undefined,
     "summary": "event 4",
@@ -156,174 +156,174 @@ Array [
 `;
 
 exports[`src/lib/events getEventsFull should return events with calendar data for all calendars 1`] = `
-Array [
-  Object {
-    "calendar": Object {
+[
+  {
+    "calendar": {
       "description": "calendar 1 description",
       "hidden": false,
       "id": "id1",
       "summary": "calendar 1",
     },
     "id": "id1",
-    "organizer": Object {
+    "organizer": {
       "displayName": "calendar 1",
       "email": "id1",
     },
     "summary": "event 1",
   },
-  Object {
-    "calendar": Object {
+  {
+    "calendar": {
       "description": "calendar 2 description",
       "hidden": undefined,
       "id": "id2",
       "summary": "calendar 2",
     },
     "id": null,
-    "organizer": Object {
+    "organizer": {
       "email": "id2",
       "self": true,
     },
     "summary": "event 2",
   },
-  Object {
+  {
     "calendar": undefined,
     "id": "id3",
-    "organizer": Object {
+    "organizer": {
       "displayName": undefined,
       "email": undefined,
     },
     "summary": "event 3",
   },
-  Object {
+  {
     "calendar": undefined,
     "id": "id4",
     "organizer": undefined,
     "summary": "event 4",
   },
-  Object {
-    "calendar": Object {
+  {
+    "calendar": {
       "description": "calendar 1 description",
       "hidden": false,
       "id": "id1",
       "summary": "calendar 1",
     },
     "id": "id1",
-    "organizer": Object {
+    "organizer": {
       "displayName": "calendar 1",
       "email": "id1",
     },
     "summary": "event 1",
   },
-  Object {
-    "calendar": Object {
+  {
+    "calendar": {
       "description": "calendar 2 description",
       "hidden": undefined,
       "id": "id2",
       "summary": "calendar 2",
     },
     "id": null,
-    "organizer": Object {
+    "organizer": {
       "email": "id2",
       "self": true,
     },
     "summary": "event 2",
   },
-  Object {
+  {
     "calendar": undefined,
     "id": "id3",
-    "organizer": Object {
+    "organizer": {
       "displayName": undefined,
       "email": undefined,
     },
     "summary": "event 3",
   },
-  Object {
+  {
     "calendar": undefined,
     "id": "id4",
     "organizer": undefined,
     "summary": "event 4",
   },
-  Object {
-    "calendar": Object {
+  {
+    "calendar": {
       "description": "calendar 1 description",
       "hidden": false,
       "id": "id1",
       "summary": "calendar 1",
     },
     "id": "id1",
-    "organizer": Object {
+    "organizer": {
       "displayName": "calendar 1",
       "email": "id1",
     },
     "summary": "event 1",
   },
-  Object {
-    "calendar": Object {
+  {
+    "calendar": {
       "description": "calendar 2 description",
       "hidden": undefined,
       "id": "id2",
       "summary": "calendar 2",
     },
     "id": null,
-    "organizer": Object {
+    "organizer": {
       "email": "id2",
       "self": true,
     },
     "summary": "event 2",
   },
-  Object {
+  {
     "calendar": undefined,
     "id": "id3",
-    "organizer": Object {
+    "organizer": {
       "displayName": undefined,
       "email": undefined,
     },
     "summary": "event 3",
   },
-  Object {
+  {
     "calendar": undefined,
     "id": "id4",
     "organizer": undefined,
     "summary": "event 4",
   },
-  Object {
-    "calendar": Object {
+  {
+    "calendar": {
       "description": "calendar 1 description",
       "hidden": false,
       "id": "id1",
       "summary": "calendar 1",
     },
     "id": "id1",
-    "organizer": Object {
+    "organizer": {
       "displayName": "calendar 1",
       "email": "id1",
     },
     "summary": "event 1",
   },
-  Object {
-    "calendar": Object {
+  {
+    "calendar": {
       "description": "calendar 2 description",
       "hidden": undefined,
       "id": "id2",
       "summary": "calendar 2",
     },
     "id": null,
-    "organizer": Object {
+    "organizer": {
       "email": "id2",
       "self": true,
     },
     "summary": "event 2",
   },
-  Object {
+  {
     "calendar": undefined,
     "id": "id3",
-    "organizer": Object {
+    "organizer": {
       "displayName": undefined,
       "email": undefined,
     },
     "summary": "event 3",
   },
-  Object {
+  {
     "calendar": undefined,
     "id": "id4",
     "organizer": undefined,
@@ -333,45 +333,45 @@ Array [
 `;
 
 exports[`src/lib/events getEventsFull should return events with calendar data only for selected calendar 1`] = `
-Array [
-  Object {
-    "calendar": Object {
+[
+  {
+    "calendar": {
       "description": "calendar 1 description",
       "hidden": false,
       "id": "id1",
       "summary": "calendar 1",
     },
     "id": "id1",
-    "organizer": Object {
+    "organizer": {
       "displayName": "calendar 1",
       "email": "id1",
     },
     "summary": "event 1",
   },
-  Object {
-    "calendar": Object {
+  {
+    "calendar": {
       "description": "calendar 2 description",
       "hidden": undefined,
       "id": "id2",
       "summary": "calendar 2",
     },
     "id": null,
-    "organizer": Object {
+    "organizer": {
       "email": "id2",
       "self": true,
     },
     "summary": "event 2",
   },
-  Object {
+  {
     "calendar": undefined,
     "id": "id3",
-    "organizer": Object {
+    "organizer": {
       "displayName": undefined,
       "email": undefined,
     },
     "summary": "event 3",
   },
-  Object {
+  {
     "calendar": undefined,
     "id": "id4",
     "organizer": undefined,

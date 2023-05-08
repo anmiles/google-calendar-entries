@@ -31,16 +31,16 @@
     "login": "node ./dist/login.js"
   },
   "dependencies": {
-    "@anmiles/google-api-wrapper": "^7.0.4",
+    "@anmiles/google-api-wrapper": "^8.0.2",
     "colorette": "^2.0.19",
     "execa": "^5.1.1",
-    "googleapis": "^104.0.0",
+    "googleapis": "^118.0.0",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@anmiles/eslint-config": "^1.0.6",
     "@types/jest": "^29.5.1",
-    "@types/lodash": "^4.14.191",
+    "@types/lodash": "^4.14.194",
     "@typescript-eslint/eslint-plugin": "^5.59.2",
     "@typescript-eslint/parser": "^5.59.2",
     "eslint": "^8.40.0",
