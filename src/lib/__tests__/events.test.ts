@@ -1,8 +1,10 @@
 import fs from 'fs';
 import { getCalendarAPI, getItems } from '@anmiles/google-api-wrapper';
 import logger from '@anmiles/logger';
-
 import original from '../events';
+
+const mockDate = new Date(2012, 11, 26, 7, 40, 0);
+jest.useFakeTimers();
 
 jest.mock<Partial<typeof fs>>('fs', () => ({
 	writeFileSync : jest.fn(),
@@ -32,7 +34,12 @@ const api = {
 let calendars: Array<{ id?: string | null | undefined, summary?: string, description?: string, hidden?: boolean }>;
 let events: Array<{ id?: string | null | undefined, summary?: string, organizer?: { email?: string, displayName?: string, self?: boolean} }>;
 
+const endOfYear = new Date(new Date().getFullYear() + 1, 0, 1).toISOString();
+jest.spyOn(original, 'getEndOfYear').mockReturnValue(endOfYear);
+
 beforeEach(() => {
+	jest.setSystemTime(mockDate);
+
 	calendars = [
 		{ id : 'id1', summary : 'calendar 1', description : 'calendar 1 description', hidden : false },
 		{ id : 'id2', summary : 'calendar 2', description : 'calendar 2 description', hidden : undefined },
@@ -48,10 +55,12 @@ beforeEach(() => {
 	];
 });
 
+afterEach(() => {
+	jest.setSystemTime(new Date());
+});
+
 describe('src/lib/events', () => {
 	describe('getEvents', () => {
-		const timeMax = `${new Date().getFullYear()}-12-31T21:00:00.000Z`;
-
 		it('should get calendar API', async () => {
 			await original.getEvents(profile);
 
@@ -84,10 +93,10 @@ describe('src/lib/events', () => {
 
 			expect(getItems).toHaveBeenCalledTimes(5);
 			expect(getItems).toHaveBeenCalledWith(api.calendarList, { }, { hideProgress : true });
-			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : calendars[0].id, singleEvents : true, timeMax }, { hideProgress : true });
-			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : calendars[1].id, singleEvents : true, timeMax }, { hideProgress : true });
-			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : undefined, singleEvents : true, timeMax }, { hideProgress : true });
-			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : calendars[3].id, singleEvents : true, timeMax }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : calendars[0].id, singleEvents : true, timeMax: endOfYear }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : calendars[1].id, singleEvents : true, timeMax: endOfYear }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : undefined, singleEvents : true, timeMax: endOfYear }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : calendars[3].id, singleEvents : true, timeMax: endOfYear }, { hideProgress : true });
 		});
 
 		it('should get events only for selected calendar without showing progress', async () => {
@@ -95,7 +104,7 @@ describe('src/lib/events', () => {
 
 			expect(getItems).toHaveBeenCalledTimes(2);
 			expect(getItems).toHaveBeenCalledWith(api.calendarList, { }, { hideProgress : true });
-			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : calendars[1].id, singleEvents : true, timeMax }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : calendars[1].id, singleEvents : true, timeMax: endOfYear }, { hideProgress : true });
 		});
 
 		it('should return events for all calendars', async () => {

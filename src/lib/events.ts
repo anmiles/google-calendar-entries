@@ -1,9 +1,10 @@
 import type GoogleApis from 'googleapis';
 import { getCalendarAPI, getItems } from '@anmiles/google-api-wrapper';
 import _ from 'lodash';
+import thisLib from './events';
 
 export { getEvents, getEventsFull };
-export default { getEvents, getEventsFull };
+export default { getEvents, getEventsFull, getEndOfYear };
 
 async function getEvents(profile: string, calendarName?: string): Promise<Array<GoogleApis.calendar_v3.Schema$Event>> {
 	const { events } = await getCalendarsAndEvents(profile, calendarName);
@@ -39,7 +40,7 @@ async function getCalendarsAndEvents(profile: string, calendarName?: string): Pr
 		throw `Unknown calendar '${calendarName}' for profile '${profile}'`;
 	}
 
-	const endOfYear = new Date(new Date().getFullYear() + 1, 0, 1).toISOString();
+	const endOfYear = thisLib.getEndOfYear();
 
 	const allEventsPromises = selectedCalendars.map((c) => getItems(
 		calendarAPI.events,
@@ -51,4 +52,9 @@ async function getCalendarsAndEvents(profile: string, calendarName?: string): Pr
 	const events    = _.flatten(allEvents);
 
 	return { calendars, events };
+}
+
+/* istanbul ignore next */
+function getEndOfYear() {
+	return new Date(new Date().getFullYear() + 1, 0, 1).toISOString();
 }
