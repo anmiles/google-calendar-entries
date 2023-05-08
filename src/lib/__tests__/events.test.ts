@@ -58,13 +58,13 @@ describe('src/lib/events', () => {
 		it('should get calendar API', async () => {
 			await original.getEvents(profile);
 
-			expect(getCalendarAPI).toBeCalledWith(profile);
+			expect(getCalendarAPI).toHaveBeenCalledWith(profile);
 		});
 
 		it('should get all calendars', async () => {
 			await original.getEvents(profile);
 
-			expect(getItems).toBeCalledWith(api.calendarList, {}, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledWith(api.calendarList, {}, { hideProgress : true });
 		});
 
 		it('should throw if there are no available calendars', async () => {
@@ -85,20 +85,20 @@ describe('src/lib/events', () => {
 		it('should get events for all calendars without showing progress', async () => {
 			await original.getEvents(profile);
 
-			expect(getItems).toBeCalledTimes(5);
-			expect(getItems).toBeCalledWith(api.calendarList, { }, { hideProgress : true });
-			expect(getItems).toBeCalledWith(api.events, { calendarId : calendars[0].id, singleEvents : true, timeMax }, { hideProgress : true });
-			expect(getItems).toBeCalledWith(api.events, { calendarId : calendars[1].id, singleEvents : true, timeMax }, { hideProgress : true });
-			expect(getItems).toBeCalledWith(api.events, { calendarId : undefined, singleEvents : true, timeMax }, { hideProgress : true });
-			expect(getItems).toBeCalledWith(api.events, { calendarId : calendars[3].id, singleEvents : true, timeMax }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledTimes(5);
+			expect(getItems).toHaveBeenCalledWith(api.calendarList, { }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : calendars[0].id, singleEvents : true, timeMax }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : calendars[1].id, singleEvents : true, timeMax }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : undefined, singleEvents : true, timeMax }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : calendars[3].id, singleEvents : true, timeMax }, { hideProgress : true });
 		});
 
 		it('should get events only for selected calendar without showing progress', async () => {
 			await original.getEvents(profile, calendars[1].summary);
 
-			expect(getItems).toBeCalledTimes(2);
-			expect(getItems).toBeCalledWith(api.calendarList, { }, { hideProgress : true });
-			expect(getItems).toBeCalledWith(api.events, { calendarId : calendars[1].id, singleEvents : true, timeMax }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledTimes(2);
+			expect(getItems).toHaveBeenCalledWith(api.calendarList, { }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledWith(api.events, { calendarId : calendars[1].id, singleEvents : true, timeMax }, { hideProgress : true });
 		});
 
 		it('should return events for all calendars', async () => {
