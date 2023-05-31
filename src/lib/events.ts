@@ -1,5 +1,5 @@
 import type GoogleApis from 'googleapis';
-import { getCalendarAPI, getItems } from '@anmiles/google-api-wrapper';
+import { getAPI } from '@anmiles/google-api-wrapper';
 import _ from 'lodash';
 
 export { getEvents, getEventsFull };
@@ -26,8 +26,8 @@ async function getCalendarsAndEvents(profile: string, calendarName?: string): Pr
 	events: Array<GoogleApis.calendar_v3.Schema$Event>,
 	calendars: Array<GoogleApis.calendar_v3.Schema$CalendarListEntry>
 }> {
-	const calendarAPI = await getCalendarAPI(profile);
-	const calendars   = await getItems(calendarAPI.calendarList, {}, { hideProgress : true });
+	const calendarAPI = await getAPI('calendar', profile);
+	const calendars   = await calendarAPI.getItems((api) => api.calendarList, {}, { hideProgress : true });
 
 	if (calendars.length === 0) {
 		throw `There are no available calendars for profile '${profile}'`;
@@ -41,8 +41,8 @@ async function getCalendarsAndEvents(profile: string, calendarName?: string): Pr
 
 	const timeMax = new Date(new Date().getFullYear() + 1, 0, 1).toISOString();
 
-	const allEventsPromises = selectedCalendars.map((c) => getItems(
-		calendarAPI.events,
+	const allEventsPromises = selectedCalendars.map((c) => calendarAPI.getItems(
+		(api) => api.events,
 		{ calendarId : c.id || undefined, singleEvents : true, timeMax },
 		{ hideProgress : true },
 	));

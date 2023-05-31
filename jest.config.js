@@ -23,4 +23,7 @@ module.exports = {
 		'!<rootDir>/input/**',
 		'!<rootDir>/secrets/**',
 	],
+	setupFilesAfterEnv : [
+		'<rootDir>/jest.extend.js',
+	],
 };
