@@ -9,7 +9,7 @@ jest.mock<Partial<typeof logger>>('@anmiles/logger', () => ({
 }));
 
 jest.mock<Partial<typeof googleApiWrapper>>('@anmiles/google-api-wrapper', () => ({
-	getProfiles : jest.fn().mockImplementation(() => existingProfiles),
+	filterProfiles : jest.fn().mockImplementation(() => [ profile1, profile2 ]),
 }));
 
 jest.mock<Partial<typeof events>>('../events', () => ({
@@ -33,67 +33,32 @@ const eventsList: Array<{ id?: string | null | undefined, summary?: string, orga
 	{ id : 'id4', summary : 'event 4', organizer : { email : 'id4', self : true }, calendar : calendars[3] },
 ];
 
-let existingProfiles: string[];
-
-beforeEach(() => {
-	existingProfiles = [ profile1, profile2 ];
-});
-
 describe('src/lib/app', () => {
 	describe('run', () => {
-		it('should get profiles', async () => {
-			await app.run();
+		it('should filter profiles', async () => {
+			await app.run(profile1);
 
-			expect(googleApiWrapper.getProfiles).toHaveBeenCalled();
+			expect(googleApiWrapper.filterProfiles).toHaveBeenCalledWith(profile1);
 		});
 
-		it('should output error if no profiles', async () => {
-			existingProfiles = [];
-
-			const func = () => app.run();
-
-			await expect(func).rejects.toEqual('Please `npm run create` at least one profile');
-		});
-
-		it('should get events JSON for all profiles', async () => {
+		it('should get events JSON for all filtered profiles', async () => {
 			await app.run();
 
 			expect(events.getEventsFull).toHaveBeenCalledWith(profile1, undefined);
 			expect(events.getEventsFull).toHaveBeenCalledWith(profile2, undefined);
 		});
 
-		it('should get events JSON only for specified profile', async () => {
-			await app.run(profile1);
-
-			expect(events.getEventsFull).toHaveBeenCalledWith(profile1, undefined);
-			expect(events.getEventsFull).not.toHaveBeenCalledWith(profile2, undefined);
-		});
-
-		it('should get events JSON for all profiles and selected calendar', async () => {
+		it('should get events JSON for all filtered profiles and selected calendar', async () => {
 			await app.run(undefined, 'calendar name');
 
 			expect(events.getEventsFull).toHaveBeenCalledWith(profile1, 'calendar name');
 			expect(events.getEventsFull).toHaveBeenCalledWith(profile2, 'calendar name');
 		});
 
-		it('should get events JSON only for specified profile and selected calendar', async () => {
-			await app.run(profile1, 'calendar name');
-
-			expect(events.getEventsFull).toHaveBeenCalledWith(profile1, 'calendar name');
-			expect(events.getEventsFull).not.toHaveBeenCalledWith(profile2, 'calendar name');
-		});
-
-		it('should output events JSON for all profiles', async () => {
+		it('should output events JSON for all filtered profiles', async () => {
 			await app.run();
 
 			expect(logger.log).toHaveBeenCalledTimes(2);
-			expect(logger.log).toHaveBeenCalledWith(JSON.stringify(eventsList, null, '    '));
-		});
-
-		it('should output events JSON only for specified profile', async () => {
-			await app.run(profile1);
-
-			expect(logger.log).toHaveBeenCalledTimes(1);
 			expect(logger.log).toHaveBeenCalledWith(JSON.stringify(eventsList, null, '    '));
 		});
 	});
