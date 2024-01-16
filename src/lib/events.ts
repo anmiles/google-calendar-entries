@@ -1,4 +1,5 @@
 import type GoogleApis from 'googleapis';
+import { calendar } from 'googleapis/build/src/apis/calendar';
 import { getAPI } from '@anmiles/google-api-wrapper';
 import _ from 'lodash';
 
@@ -26,7 +27,7 @@ async function getCalendarsAndEvents(profile: string, calendarName?: string): Pr
 	events: Array<GoogleApis.calendar_v3.Schema$Event>,
 	calendars: Array<GoogleApis.calendar_v3.Schema$CalendarListEntry>
 }> {
-	const calendarAPI = await getAPI('calendar', profile);
+	const calendarAPI = await getAPI((auth) => calendar({ version : 'v3', auth }), profile);
 	const calendars   = await calendarAPI.getItems((api) => api.calendarList, {}, { hideProgress : true });
 
 	if (calendars.length === 0) {

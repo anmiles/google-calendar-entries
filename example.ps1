@@ -27,7 +27,7 @@ $result = Decode866 (node ./dist/index.js)
 
 Write-Host "Processing..."
 $all_events = $result | ConvertFrom-Json
-$events = $all_events | ? { $_.calendar -and $_.calendar.accessRole -ne "reader" -and $calendars.Contains($_.calendar.summary) -and $_.status -eq "confirmed" }
+$events = $all_events | ? { $_.calendar -and $_.calendar.accessRole -ne "reader" -and (!$calendars -or $calendars.Contains($_.calendar.summary)) -and $_.status -eq "confirmed" }
 
 $events | % {
 	$_ | Add-Member -MemberType NoteProperty -Name dateTime -Value ""

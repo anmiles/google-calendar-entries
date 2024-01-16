@@ -1,5 +1,6 @@
 import fs from 'fs';
 import logger from '@anmiles/logger';
+import { calendar } from 'googleapis/build/src/apis/calendar';
 import original from '../events';
 import '@anmiles/jest-extensions';
 
@@ -8,6 +9,10 @@ jest.useFakeTimers();
 
 jest.mock<Partial<typeof fs>>('fs', () => ({
 	writeFileSync : jest.fn(),
+}));
+
+jest.mock<{ calendar: typeof calendar }>('googleapis/build/src/apis/calendar', () => ({
+	calendar : jest.fn().mockImplementation(() => apis),
 }));
 
 jest.mock('@anmiles/google-api-wrapper', () => ({
@@ -39,21 +44,19 @@ const getAPI = jest.fn().mockImplementation(async () => ({
 let calendars: Array<{ id?: string | null | undefined, summary?: string, description?: string, hidden?: boolean }>;
 let events: Array<{ id?: string | null | undefined, summary?: string, organizer?: { email?: string, displayName?: string, self?: boolean} }>;
 
-let toISOStringSpy: jest.SpyInstance;
+const toISOStringOriginal = Date.prototype.toISOString;
 let endOfYear: string;
 
 beforeAll(() => {
-	toISOStringSpy = jest.spyOn(Date.prototype, 'toISOString');
+	Date.prototype.toISOString = function() {
+		return this.toLocaleString('ru');
+	};
 });
 
 beforeEach(() => {
 	jest.setSystemTime(mockDate);
 
 	endOfYear = new Date(new Date().getFullYear() + 1, 0, 1).toISOString();
-
-	toISOStringSpy.mockImplementation(function() {
-		return this.toLocaleString('ru');
-	});
 
 	calendars = [
 		{ id : 'id1', summary : 'calendar 1', description : 'calendar 1 description', hidden : false },
@@ -75,17 +78,11 @@ afterEach(() => {
 });
 
 afterAll(() => {
-	toISOStringSpy.mockRestore();
+	Date.prototype.toISOString = toISOStringOriginal;
 });
 
 describe('src/lib/events', () => {
 	describe('getEvents', () => {
-		it('should get calendar API', async () => {
-			await original.getEvents(profile);
-
-			expect(getAPI).toHaveBeenCalledWith('calendar', profile);
-		});
-
 		it('should get all calendars without showing progress', async () => {
 			await original.getEvents(profile);
 
@@ -104,7 +101,7 @@ describe('src/lib/events', () => {
 		});
 
 		it('should not throw if there are matching calendars', async () => {
-			const result = await original.getEvents(profile, calendars[1].summary);
+			const result = await original.getEvents(profile, calendars[1]!.summary);
 			expect(result).toBeDefined();
 		});
 
@@ -113,18 +110,18 @@ describe('src/lib/events', () => {
 
 			expect(getItems).toHaveBeenCalledTimes(5);
 			expect(getItems).toHaveBeenCalledWith(expect.toBeFunction([ apis ], apis.calendarList), { }, { hideProgress : true });
-			expect(getItems).toHaveBeenCalledWith(expect.toBeFunction([ apis ], apis.events), { calendarId : calendars[0].id, singleEvents : true, timeMax : endOfYear }, { hideProgress : true });
-			expect(getItems).toHaveBeenCalledWith(expect.toBeFunction([ apis ], apis.events), { calendarId : calendars[1].id, singleEvents : true, timeMax : endOfYear }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledWith(expect.toBeFunction([ apis ], apis.events), { calendarId : calendars[0]!.id, singleEvents : true, timeMax : endOfYear }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledWith(expect.toBeFunction([ apis ], apis.events), { calendarId : calendars[1]!.id, singleEvents : true, timeMax : endOfYear }, { hideProgress : true });
 			expect(getItems).toHaveBeenCalledWith(expect.toBeFunction([ apis ], apis.events), { calendarId : undefined, singleEvents : true, timeMax : endOfYear }, { hideProgress : true });
-			expect(getItems).toHaveBeenCalledWith(expect.toBeFunction([ apis ], apis.events), { calendarId : calendars[3].id, singleEvents : true, timeMax : endOfYear }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledWith(expect.toBeFunction([ apis ], apis.events), { calendarId : calendars[3]!.id, singleEvents : true, timeMax : endOfYear }, { hideProgress : true });
 		});
 
 		it('should get events only for selected calendar without showing progress', async () => {
-			await original.getEvents(profile, calendars[1].summary);
+			await original.getEvents(profile, calendars[1]!.summary);
 
 			expect(getItems).toHaveBeenCalledTimes(2);
 			expect(getItems).toHaveBeenCalledWith(expect.toBeFunction([ apis ], apis.calendarList), { }, { hideProgress : true });
-			expect(getItems).toHaveBeenCalledWith(expect.toBeFunction([ apis ], apis.events), { calendarId : calendars[1].id, singleEvents : true, timeMax : endOfYear }, { hideProgress : true });
+			expect(getItems).toHaveBeenCalledWith(expect.toBeFunction([ apis ], apis.events), { calendarId : calendars[1]!.id, singleEvents : true, timeMax : endOfYear }, { hideProgress : true });
 		});
 
 		it('should return events for all calendars', async () => {
@@ -135,7 +132,7 @@ describe('src/lib/events', () => {
 		});
 
 		it('should return events only for selected calendar', async () => {
-			const events = await original.getEvents(profile, calendars[1].summary);
+			const events = await original.getEvents(profile, calendars[1]!.summary);
 
 			expect(events).toHaveLength(4);
 			expect(events).toMatchSnapshot();
@@ -151,7 +148,7 @@ describe('src/lib/events', () => {
 		});
 
 		it('should return events with calendar data only for selected calendar', async () => {
-			const result = await original.getEventsFull(profile, calendars[1].summary);
+			const result = await original.getEventsFull(profile, calendars[1]!.summary);
 
 			expect(result).toHaveLength(4);
 			expect(result).toMatchSnapshot();
