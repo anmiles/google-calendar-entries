@@ -41,6 +41,8 @@ const getAPI = jest.fn().mockImplementation(async () => ({
 	getItems,
 }));
 
+const auth = { kind : 'auth' };
+
 let calendars: Array<{ id?: string | null | undefined, summary?: string, description?: string, hidden?: boolean }>;
 let events: Array<{ id?: string | null | undefined, summary?: string, organizer?: { email?: string, displayName?: string, self?: boolean} }>;
 
@@ -83,6 +85,13 @@ afterAll(() => {
 
 describe('src/lib/events', () => {
 	describe('getEvents', () => {
+		it('should get youtube API', async () => {
+			await original.getEvents(profile);
+
+			expect(getAPI).toHaveBeenCalledWith(expect.toBeFunction([ auth ], apis), profile);
+			expect(calendar).toHaveBeenCalledWith({ version : 'v3', auth });
+		});
+
 		it('should get all calendars without showing progress', async () => {
 			await original.getEvents(profile);
 
@@ -140,6 +149,13 @@ describe('src/lib/events', () => {
 	});
 
 	describe('getEventsFull', () => {
+		it('should get youtube API', async () => {
+			await original.getEventsFull(profile);
+
+			expect(getAPI).toHaveBeenCalledWith(expect.toBeFunction([ auth ], apis), profile);
+			expect(calendar).toHaveBeenCalledWith({ version : 'v3', auth });
+		});
+
 		it('should return events with calendar data for all calendars', async () => {
 			const events = await original.getEventsFull(profile);
 
