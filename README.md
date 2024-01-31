@@ -7,11 +7,11 @@ View and manage google calendar entries
 ## Installation
 
 1. Install dependencies
-`npm install`
+    - `npm install`
 1. Build
-`npm run build`
+    - `npm run build`
 1. Test everything
-`npm test`
+    - `npm test`
 
 ## Adding profiles
 
@@ -24,14 +24,14 @@ You can create as many profiles as you want.
 
 ## Authentication
 
-`npm run login` to login into all existing profiles
-`npm run login <profile>` to login into selected profile
+- `npm run login` to login into all existing profiles
+- `npm run login <profile>` to login into selected profile
 
 ## Downloading
 
-`npm start` to output all calendar entires into stdout
-`npm start <profile>` to output all calendar entries from selected profile into stdout
-`npm start <profile> <calendar name>` to output all calendar entries from selected profile and selected calendar into stdout
+- `npm start` to output all calendar entires into stdout
+- `npm start <profile>` to output all calendar entries from selected profile into stdout
+- `npm start <profile> <calendar name>` to output all calendar entries from selected profile and selected calendar into stdout
 
 ## Examples
 
