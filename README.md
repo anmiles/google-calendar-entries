@@ -15,10 +15,11 @@ View and manage google calendar entries
 
 ## Adding profiles
 
-This application may work with multiple profiles (download videos liked from multiple youtube accounts).
+This application may work with multiple profiles (view and manage calendar entries from multiple google accounts).
 
 1. Come up with any profile name you want
 1. Execute `npm run create <profile>`
+
 You can create as many profiles as you want.
 
 ## Authentication
