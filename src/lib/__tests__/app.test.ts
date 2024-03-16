@@ -13,20 +13,29 @@ jest.mock<Partial<typeof googleApiWrapper>>('@anmiles/google-api-wrapper', () =>
 }));
 
 jest.mock<Partial<typeof events>>('../events', () => ({
-	getEventsFull : jest.fn().mockImplementation(async () => eventsList),
+	getEventsFull : jest.fn().mockImplementation(() => eventsList),
 }));
 
 const profile1 = 'username1';
 const profile2 = 'username2';
 
-const calendars: Array<{ id?: string | null | undefined, summary?: string, description?: string, hidden?: boolean }> = [
+const calendars: Array<{ id? : string | null | undefined; summary? : string; description? : string; hidden? : boolean }> = [
 	{ id : 'id1', summary : 'calendar 1', description : 'calendar 1 description', hidden : false },
 	{ id : 'id2', summary : 'calendar 2', description : 'calendar 2 description', hidden : undefined },
 	{ id : null, summary : 'calendar 3', description : undefined, hidden : true },
 	{ id : 'id4', summary : 'calendar 4', description : undefined, hidden : undefined },
 ];
 
-const eventsList: Array<{ id?: string | null | undefined, summary?: string, organizer?: { email?: string, displayName?: string, self?: boolean}, calendar?: typeof calendars[number] }> = [
+const eventsList: Array<{
+	id?        : string | null | undefined;
+	summary?   : string;
+	organizer? : {
+		email?       : string;
+		displayName? : string;
+		self?        : boolean;
+	};
+	calendar? : typeof calendars[number];
+}> = [
 	{ id : 'id1', summary : 'event 1', organizer : { email : 'id1', displayName : 'calendar 1' }, calendar : calendars[0] },
 	{ id : null, summary : 'event 2', organizer : { email : 'id2', displayName : 'calendar 2' }, calendar : calendars[1] },
 	{ id : 'id3', summary : 'event 3', organizer : { email : undefined, displayName : undefined }, calendar : undefined },

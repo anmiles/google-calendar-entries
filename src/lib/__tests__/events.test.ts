@@ -1,5 +1,5 @@
-import fs from 'fs';
-import logger from '@anmiles/logger';
+import type fs from 'fs';
+import type logger from '@anmiles/logger';
 import { calendar } from 'googleapis/build/src/apis/calendar';
 import original from '../events';
 import '@anmiles/jest-extensions';
@@ -11,12 +11,13 @@ jest.mock<Partial<typeof fs>>('fs', () => ({
 	writeFileSync : jest.fn(),
 }));
 
-jest.mock<{ calendar: typeof calendar }>('googleapis/build/src/apis/calendar', () => ({
+jest.mock<{ calendar : typeof calendar }>('googleapis/build/src/apis/calendar', () => ({
 	calendar : jest.fn().mockImplementation(() => apis),
 }));
 
 jest.mock('@anmiles/google-api-wrapper', () => ({
-	getAPI : jest.fn().mockImplementation((...args) => getAPI(...args)),
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-return -- simplified mock
+	getAPI : jest.fn().mockImplementation((...args: unknown[]) => getAPI(...args)),
 }));
 
 jest.mock<Partial<typeof logger>>('@anmiles/logger', () => ({
@@ -30,22 +31,24 @@ const apis = {
 	events       : 'events',
 } as const;
 
-const getItems = jest.fn().mockImplementation(async (selectAPI: (api: typeof apis) => typeof apis[keyof typeof apis]) => {
+function mockGetItems(selectAPI: ((api: typeof apis) => typeof apis[keyof typeof apis])): typeof calendars | typeof events {
 	switch (selectAPI(apis)) {
 		case apis.calendarList: return calendars;
 		case apis.events: return events;
 	}
-});
+}
 
-const getAPI = jest.fn().mockImplementation(async () => ({
-	getItems,
-}));
+const getItems = jest.fn().mockImplementation(mockGetItems) as jest.Mock<unknown, Parameters<typeof mockGetItems>>;
+
+// eslint-disable-next-line @typescript-eslint/require-await -- allow partial mock
+const getAPI = jest.fn().mockImplementation(async () => ({ getItems }));
 
 const auth = { kind : 'auth' };
 
-let calendars: Array<{ id?: string | null | undefined, summary?: string, description?: string, hidden?: boolean }>;
-let events: Array<{ id?: string | null | undefined, summary?: string, organizer?: { email?: string, displayName?: string, self?: boolean} }>;
+let calendars: Array<{ id? : string | null | undefined; summary? : string; description? : string; hidden? : boolean }>;
+let events: Array<{ id? : string | null | undefined; summary? : string; organizer? : { email? : string; displayName? : string; self? : boolean } }>;
 
+// eslint-disable-next-line @typescript-eslint/unbound-method -- change the prototype
 const toISOStringOriginal = Date.prototype.toISOString;
 let endOfYear: string;
 
@@ -96,17 +99,19 @@ describe('src/lib/events', () => {
 			await original.getEvents(profile);
 
 			expect(getItems).toHaveBeenCalledWith(expect.anything(), {}, { hideProgress : true });
-			expect(getItems.mock.calls[0][0](apis)).toEqual(apis.calendarList);
+			expect(getItems.mock.calls[0]?.[0](apis)).toEqual(apis.calendarList);
 		});
 
 		it('should throw if there are no available calendars', async () => {
 			calendars = [];
 
-			await expect(() => original.getEvents(profile)).rejects.toEqual(`There are no available calendars for profile '${profile}'`);
+			const promise = async (): Promise<unknown> => original.getEvents(profile);
+			await expect(promise).rejects.toEqual(new Error(`There are no available calendars for profile '${profile}'`));
 		});
 
 		it('should throw if there are no matching calendars', async () => {
-			await expect(() => original.getEvents(profile, 'random calendar name')).rejects.toEqual(`Unknown calendar 'random calendar name' for profile '${profile}'`);
+			const promise = async (): Promise<unknown> => original.getEvents(profile, 'random calendar name');
+			await expect(promise).rejects.toEqual(new Error(`Unknown calendar 'random calendar name' for profile '${profile}'`));
 		});
 
 		it('should not throw if there are matching calendars', async () => {
@@ -118,19 +123,54 @@ describe('src/lib/events', () => {
 			await original.getEvents(profile);
 
 			expect(getItems).toHaveBeenCalledTimes(5);
-			expect(getItems).toHaveBeenCalledWith(expect.toBeFunction([ apis ], apis.calendarList), { }, { hideProgress : true });
-			expect(getItems).toHaveBeenCalledWith(expect.toBeFunction([ apis ], apis.events), { calendarId : calendars[0]!.id, singleEvents : true, timeMax : endOfYear }, { hideProgress : true });
-			expect(getItems).toHaveBeenCalledWith(expect.toBeFunction([ apis ], apis.events), { calendarId : calendars[1]!.id, singleEvents : true, timeMax : endOfYear }, { hideProgress : true });
-			expect(getItems).toHaveBeenCalledWith(expect.toBeFunction([ apis ], apis.events), { calendarId : undefined, singleEvents : true, timeMax : endOfYear }, { hideProgress : true });
-			expect(getItems).toHaveBeenCalledWith(expect.toBeFunction([ apis ], apis.events), { calendarId : calendars[3]!.id, singleEvents : true, timeMax : endOfYear }, { hideProgress : true });
+
+			expect(getItems).toHaveBeenCalledWith(
+				expect.toBeFunction([ apis ], apis.calendarList),
+				{ },
+				{ hideProgress : true },
+			);
+
+			expect(getItems).toHaveBeenCalledWith(
+				expect.toBeFunction([ apis ], apis.events),
+				{ calendarId : calendars[0]!.id, singleEvents : true, timeMax : endOfYear },
+				{ hideProgress : true },
+			);
+
+			expect(getItems).toHaveBeenCalledWith(
+				expect.toBeFunction([ apis ], apis.events),
+				{ calendarId : calendars[1]!.id, singleEvents : true, timeMax : endOfYear },
+				{ hideProgress : true },
+			);
+
+			expect(getItems).toHaveBeenCalledWith(
+				expect.toBeFunction([ apis ], apis.events),
+				{ calendarId : undefined, singleEvents : true, timeMax : endOfYear },
+				{ hideProgress : true },
+			);
+
+			expect(getItems).toHaveBeenCalledWith(
+				expect.toBeFunction([ apis ], apis.events),
+				{ calendarId : calendars[3]!.id, singleEvents : true, timeMax : endOfYear },
+				{ hideProgress : true },
+			);
 		});
 
 		it('should get events only for selected calendar without showing progress', async () => {
 			await original.getEvents(profile, calendars[1]!.summary);
 
 			expect(getItems).toHaveBeenCalledTimes(2);
-			expect(getItems).toHaveBeenCalledWith(expect.toBeFunction([ apis ], apis.calendarList), { }, { hideProgress : true });
-			expect(getItems).toHaveBeenCalledWith(expect.toBeFunction([ apis ], apis.events), { calendarId : calendars[1]!.id, singleEvents : true, timeMax : endOfYear }, { hideProgress : true });
+
+			expect(getItems).toHaveBeenCalledWith(
+				expect.toBeFunction([ apis ], apis.calendarList),
+				{ },
+				{ hideProgress : true },
+			);
+
+			expect(getItems).toHaveBeenCalledWith(
+				expect.toBeFunction([ apis ], apis.events),
+				{ calendarId : calendars[1]!.id, singleEvents : true, timeMax : endOfYear },
+				{ hideProgress : true },
+			);
 		});
 
 		it('should return events for all calendars', async () => {

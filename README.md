@@ -6,12 +6,7 @@ View and manage google calendar entries
 
 ## Installation
 
-1. Install dependencies
-    - `npm install`
-1. Build
-    - `npm run build`
-1. Test everything
-    - `npm test`
+`npm install google-calendar-entries`
 
 ## Adding profiles
 
