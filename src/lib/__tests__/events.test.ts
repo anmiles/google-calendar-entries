@@ -48,7 +48,6 @@ const auth = { kind : 'auth' };
 let calendars: Array<{ id? : string | null | undefined; summary? : string; description? : string; hidden? : boolean }>;
 let events: Array<{ id? : string | null | undefined; summary? : string; organizer? : { email? : string; displayName? : string; self? : boolean } }>;
 
-// eslint-disable-next-line @typescript-eslint/unbound-method -- change the prototype
 const toISOStringOriginal = Date.prototype.toISOString;
 let endOfYear: string;
 
