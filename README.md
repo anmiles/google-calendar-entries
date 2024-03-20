@@ -6,7 +6,12 @@ View and manage google calendar entries
 
 ## Installation
 
-`npm install google-calendar-entries`
+```bash
+git clone https://github.com/anmiles/google-calendar-entries.git
+cd google-calendar-entries
+npm clean-install
+npm run build
+```
 
 ## Adding profiles
 
