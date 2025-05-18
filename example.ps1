@@ -1,14 +1,14 @@
 <#
 .SYNOPSIS
-    Get counts of past events
+	Get counts of past events
 .PARAMETER calendars
-    List of calendars to get events from
+	List of calendars to get events from
 .EXAMPLE
-    ./past_events.ps1 Личный Мероприятия Задачи
+	./past_events.ps1 Personal Events Tasks
 #>
 
 Param (
-    [Parameter(ValueFromRemainingArguments = $true)][string[]]$calendars
+	[Parameter(ValueFromRemainingArguments = $true)][string[]]$calendars
 )
 
 Function Decode1251($text) {

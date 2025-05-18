@@ -1,15 +1,15 @@
+import { getAPI } from '@anmiles/google-api-wrapper';
 import type GoogleApis from 'googleapis';
 import { calendar } from 'googleapis/build/src/apis/calendar';
-import { getAPI } from '@anmiles/google-api-wrapper';
 import _ from 'lodash';
 
-async function getEvents(profile: string, calendarName?: string): Promise<Array<GoogleApis.calendar_v3.Schema$Event>> {
+export async function getEvents(profile: string, calendarName?: string): Promise<Array<GoogleApis.calendar_v3.Schema$Event>> {
 	const { events } = await getCalendarsAndEvents(profile, calendarName);
 	return events;
 }
 
-async function getEventsFull(profile: string, calendarName?: string): Promise<Array<GoogleApis.calendar_v3.Schema$Event & {
-	calendar : GoogleApis.calendar_v3.Schema$CalendarListEntry | undefined;
+export async function getEventsFull(profile: string, calendarName?: string): Promise<Array<GoogleApis.calendar_v3.Schema$Event & {
+	calendar: GoogleApis.calendar_v3.Schema$CalendarListEntry | undefined;
 }>> {
 	const { events, calendars } = await getCalendarsAndEvents(profile, calendarName);
 	const calendarsDict         = _.keyBy(calendars, 'id');
@@ -21,11 +21,11 @@ async function getEventsFull(profile: string, calendarName?: string): Promise<Ar
 }
 
 async function getCalendarsAndEvents(profile: string, calendarName?: string): Promise<{
-	events    : Array<GoogleApis.calendar_v3.Schema$Event>;
-	calendars : Array<GoogleApis.calendar_v3.Schema$CalendarListEntry>;
+	events: Array<GoogleApis.calendar_v3.Schema$Event>;
+	calendars: Array<GoogleApis.calendar_v3.Schema$CalendarListEntry>;
 }> {
-	const calendarAPI = await getAPI((auth) => calendar({ version : 'v3', auth }), profile);
-	const calendars   = await calendarAPI.getItems((api) => api.calendarList, {}, { hideProgress : true });
+	const calendarAPI = await getAPI((auth) => calendar({ version: 'v3', auth }), profile);
+	const calendars   = await calendarAPI.getItems((api) => api.calendarList, {}, { hideProgress: true });
 
 	if (calendars.length === 0) {
 		throw new Error(`There are no available calendars for profile '${profile}'`);
@@ -41,8 +41,8 @@ async function getCalendarsAndEvents(profile: string, calendarName?: string): Pr
 
 	const allEventsPromises = selectedCalendars.map(async (c) => calendarAPI.getItems(
 		(api) => api.events,
-		{ calendarId : c.id ?? undefined, singleEvents : true, timeMax },
-		{ hideProgress : true },
+		{ calendarId: c.id ?? undefined, singleEvents: true, timeMax },
+		{ hideProgress: true },
 	));
 
 	const allEvents = await Promise.all(allEventsPromises);
@@ -50,6 +50,3 @@ async function getCalendarsAndEvents(profile: string, calendarName?: string): Pr
 
 	return { calendars, events };
 }
-
-export { getEvents, getEventsFull };
-export default { getEvents, getEventsFull };

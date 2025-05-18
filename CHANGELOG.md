@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.0.0](../../tags/v6.0.0) - 2025-05-18
+__(BREAKING) Dropped support for NodeJS 18 (EOL). Minimum required version is now NodeJS 20.__
+
+### Changed
+- Migrated to NodeJS 20.19
+- Migrated to ESLint V9 flat configs
+- Updated dependencies
+
 ## [5.0.1](../../tags/v5.0.1) - 2024-03-20
 ### Changed
 - Update dependencies
@@ -58,7 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update dependencies (breaking)
 
 ## [2.1.4](../../tags/v2.1.4) - 2023-08-06
-### Chanded
+### Changed
 - Update `@anmiles/google-api-wrapper` and use `filterProfiles`
 
 ## [2.1.3](../../tags/v2.1.3) - 2023-06-11
