@@ -18,7 +18,7 @@ const calendarApis = {
 	events      : 'events',
 } as const;
 
-function mockGetItems(selectAPI: ((api: typeof calendarApis)=> typeof calendarApis[keyof typeof calendarApis])): typeof calendars | typeof events {
+function mockGetItems(selectAPI: (api: typeof calendarApis)=> typeof calendarApis[keyof typeof calendarApis]): typeof calendars | typeof events {
 	switch (selectAPI(calendarApis)) {
 		case calendarApis.calendarList: return calendars;
 		case calendarApis.events: return events;
