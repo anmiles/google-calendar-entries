@@ -18,7 +18,7 @@ const calendarApis = {
 	events      : 'events',
 } as const;
 
-function mockGetItems(selectAPI: (api: typeof calendarApis)=> typeof calendarApis[keyof typeof calendarApis]): typeof calendars | typeof events {
+function mockGetItems(selectAPI: (api: typeof calendarApis) => typeof calendarApis[keyof typeof calendarApis]): typeof calendars | typeof events {
 	switch (selectAPI(calendarApis)) {
 		case calendarApis.calendarList: return calendars;
 		case calendarApis.events: return events;
@@ -98,18 +98,18 @@ describe('src/lib/events', () => {
 		it('should throw if there are no available calendars', async () => {
 			calendars = [];
 
-			const promise = async (): Promise<unknown> => getEvents(profile);
+			const promise = getEvents(profile);
 			await expect(promise).rejects.toEqual(new Error(`There are no available calendars for profile '${profile}'`));
 		});
 
 		it('should throw if there are no matching calendars', async () => {
-			const promise = async (): Promise<unknown> => getEvents(profile, 'random calendar name');
+			const promise = getEvents(profile, 'random calendar name');
 			await expect(promise).rejects.toEqual(new Error(`Unknown calendar 'random calendar name' for profile '${profile}'`));
 		});
 
 		it('should not throw if there are matching calendars', async () => {
-			const result = await getEvents(profile, calendars[1]!.summary);
-			expect(result).toBeDefined();
+			const promise = getEvents(profile, calendars[1]!.summary);
+			await expect(promise).resolves.toBeDefined();
 		});
 
 		it('should get events for all calendars without showing progress', async () => {
@@ -119,7 +119,7 @@ describe('src/lib/events', () => {
 
 			expect(getItems).toHaveBeenCalledWith(
 				expect.toBeFunction([ calendarApis ], calendarApis.calendarList),
-				{ },
+				{},
 				{ hideProgress: true },
 			);
 
@@ -155,7 +155,7 @@ describe('src/lib/events', () => {
 
 			expect(getItems).toHaveBeenCalledWith(
 				expect.toBeFunction([ calendarApis ], calendarApis.calendarList),
-				{ },
+				{},
 				{ hideProgress: true },
 			);
 

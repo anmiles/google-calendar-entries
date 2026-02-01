@@ -34,7 +34,7 @@ const eventsList: Array<{
 	{ id: 'id4', summary: 'event 4', organizer: { email: 'id4', self: true }, calendar: calendars[3] },
 ];
 
-jest.mocked(filterProfiles).mockImplementation(() => [ profile1, profile2 ]);
+jest.mocked(filterProfiles).mockReturnValue([ profile1, profile2 ]);
 jest.mocked(getEventsFull).mockResolvedValue(eventsList);
 
 describe('src/lib/app', () => {
