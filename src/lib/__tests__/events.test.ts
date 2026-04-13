@@ -32,8 +32,24 @@ const getAPIMock = jest.fn().mockImplementation(async () => ({ getItems }));
 
 const auth = { kind: 'auth' };
 
-let calendars: Array<{ id?: string | null | undefined; summary?: string; description?: string; hidden?: boolean }>;
-let events: Array<{ id?: string | null | undefined; summary?: string; organizer?: { email?: string; displayName?: string; self?: boolean } }>;
+let calendars: Array<{
+	id?: string | null | undefined;
+	summary?: string;
+	description?: string;
+	hidden?: boolean;
+	accessRole?: string;
+}>;
+
+let events: Array<{
+	id?: string | null | undefined;
+	summary?: string;
+	organizer?: {
+		email?: string;
+		displayName?: string;
+		self?: boolean;
+	};
+	status?: string;
+}>;
 
 const toISOStringOriginal = Date.prototype.toISOString; // eslint-disable-line @typescript-eslint/unbound-method
 let endOfYear: string;
@@ -57,14 +73,16 @@ beforeEach(() => {
 	endOfYear = new Date(new Date().getFullYear() + 1, 0, 1).toISOString();
 
 	calendars = [
-		{ id: 'id1', summary: 'calendar 1', description: 'calendar 1 description', hidden: false },
-		{ id: 'id2', summary: 'calendar 2', description: 'calendar 2 description', hidden: undefined },
-		{ id: null, summary: 'calendar 3', description: undefined, hidden: true },
-		{ id: 'id4', summary: 'calendar 4', description: undefined, hidden: undefined },
+		{ id: 'id1', summary: 'calendar 1', description: 'calendar 1 description', hidden: false, accessRole: 'owner' },
+		{ id: 'id2', summary: 'calendar 2', description: 'calendar 2 description', hidden: undefined, accessRole: 'writer' },
+		{ id: null, summary: 'calendar 3', description: undefined, hidden: true, accessRole: 'owner' },
+		{ id: 'id4', summary: 'calendar 4', description: undefined, hidden: undefined, accessRole: 'writer' },
+		{ id: 'imported', summary: 'imported calendar', description: 'imported calendar description', hidden: false, accessRole: 'reader' },
 	];
 
 	events = [
-		{ id: 'id1', summary: 'event 1', organizer: { email: 'id1', displayName: 'calendar 1' } },
+		{ id: 'id1', summary: 'event 1', organizer: { email: 'id1', displayName: 'calendar 1' }, status: 'confirmed' },
+		{ id: 'id1.cancelled', summary: 'event 1.cancelled', organizer: { email: 'id1', displayName: 'calendar 1' }, status: 'cancelled' },
 		{ id: null, summary: 'event 2', organizer: { email: 'id2', self: true } },
 		{ id: 'id3', summary: 'event 3', organizer: { email: undefined, displayName: undefined } },
 		{ id: 'id4', summary: 'event 4', organizer: undefined },
@@ -125,25 +143,25 @@ describe('src/lib/events', () => {
 
 			expect(getItems).toHaveBeenCalledWith(
 				expect.toBeFunction([ calendarApis ], calendarApis.events),
-				{ calendarId: calendars[0]!.id, singleEvents: true, timeMax: endOfYear },
+				{ calendarId: calendars[0]!.id, timeMax: endOfYear },
 				{ hideProgress: true },
 			);
 
 			expect(getItems).toHaveBeenCalledWith(
 				expect.toBeFunction([ calendarApis ], calendarApis.events),
-				{ calendarId: calendars[1]!.id, singleEvents: true, timeMax: endOfYear },
+				{ calendarId: calendars[1]!.id, timeMax: endOfYear },
 				{ hideProgress: true },
 			);
 
 			expect(getItems).toHaveBeenCalledWith(
 				expect.toBeFunction([ calendarApis ], calendarApis.events),
-				{ calendarId: undefined, singleEvents: true, timeMax: endOfYear },
+				{ calendarId: undefined, timeMax: endOfYear },
 				{ hideProgress: true },
 			);
 
 			expect(getItems).toHaveBeenCalledWith(
 				expect.toBeFunction([ calendarApis ], calendarApis.events),
-				{ calendarId: calendars[3]!.id, singleEvents: true, timeMax: endOfYear },
+				{ calendarId: calendars[3]!.id, timeMax: endOfYear },
 				{ hideProgress: true },
 			);
 		});
@@ -161,7 +179,8 @@ describe('src/lib/events', () => {
 
 			expect(getItems).toHaveBeenCalledWith(
 				expect.toBeFunction([ calendarApis ], calendarApis.events),
-				{ calendarId: calendars[1]!.id, singleEvents: true, timeMax: endOfYear },
+				// TODO: parametrize singleEvents and accessRole
+				{ calendarId: calendars[1]!.id, timeMax: endOfYear },
 				{ hideProgress: true },
 			);
 		});

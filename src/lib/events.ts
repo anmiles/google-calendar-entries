@@ -31,7 +31,7 @@ async function getCalendarsAndEvents(profile: string, calendarName?: string): Pr
 		throw new Error(`There are no available calendars for profile '${profile}'`);
 	}
 
-	const selectedCalendars = calendars.filter((c) => !calendarName || calendarName === c.summary);
+	const selectedCalendars = calendars.filter((c) => calendarName ? calendarName === c.summary : c.accessRole === 'writer' || c.accessRole === 'owner');
 
 	if (selectedCalendars.length === 0) {
 		throw new Error(`Unknown calendar '${calendarName}' for profile '${profile}'`);
@@ -41,12 +41,12 @@ async function getCalendarsAndEvents(profile: string, calendarName?: string): Pr
 
 	const allEventsPromises = selectedCalendars.map(async (c) => calendarAPI.getItems(
 		(api) => api.events,
-		{ calendarId: c.id ?? undefined, singleEvents: true, timeMax },
+		{ calendarId: c.id ?? undefined, timeMax },
 		{ hideProgress: true },
 	));
 
 	const allEvents = await Promise.all(allEventsPromises);
-	const events    = _.flatten(allEvents);
+	const events    = _.flatten(allEvents).filter((e) => e.status !== 'cancelled');
 
 	return { calendars, events };
 }

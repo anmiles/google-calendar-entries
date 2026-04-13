@@ -8,6 +8,7 @@ exports[`src/lib/events getEvents should return events for all calendars 1`] = `
       "displayName": "calendar 1",
       "email": "id1",
     },
+    "status": "confirmed",
     "summary": "event 1",
   },
   {
@@ -37,6 +38,7 @@ exports[`src/lib/events getEvents should return events for all calendars 1`] = `
       "displayName": "calendar 1",
       "email": "id1",
     },
+    "status": "confirmed",
     "summary": "event 1",
   },
   {
@@ -66,6 +68,7 @@ exports[`src/lib/events getEvents should return events for all calendars 1`] = `
       "displayName": "calendar 1",
       "email": "id1",
     },
+    "status": "confirmed",
     "summary": "event 1",
   },
   {
@@ -95,6 +98,7 @@ exports[`src/lib/events getEvents should return events for all calendars 1`] = `
       "displayName": "calendar 1",
       "email": "id1",
     },
+    "status": "confirmed",
     "summary": "event 1",
   },
   {
@@ -129,6 +133,7 @@ exports[`src/lib/events getEvents should return events only for selected calenda
       "displayName": "calendar 1",
       "email": "id1",
     },
+    "status": "confirmed",
     "summary": "event 1",
   },
   {
@@ -159,6 +164,7 @@ exports[`src/lib/events getEventsFull should return events with calendar data fo
 [
   {
     "calendar": {
+      "accessRole": "owner",
       "description": "calendar 1 description",
       "hidden": false,
       "id": "id1",
@@ -169,10 +175,12 @@ exports[`src/lib/events getEventsFull should return events with calendar data fo
       "displayName": "calendar 1",
       "email": "id1",
     },
+    "status": "confirmed",
     "summary": "event 1",
   },
   {
     "calendar": {
+      "accessRole": "writer",
       "description": "calendar 2 description",
       "hidden": undefined,
       "id": "id2",
@@ -202,6 +210,7 @@ exports[`src/lib/events getEventsFull should return events with calendar data fo
   },
   {
     "calendar": {
+      "accessRole": "owner",
       "description": "calendar 1 description",
       "hidden": false,
       "id": "id1",
@@ -212,10 +221,12 @@ exports[`src/lib/events getEventsFull should return events with calendar data fo
       "displayName": "calendar 1",
       "email": "id1",
     },
+    "status": "confirmed",
     "summary": "event 1",
   },
   {
     "calendar": {
+      "accessRole": "writer",
       "description": "calendar 2 description",
       "hidden": undefined,
       "id": "id2",
@@ -245,6 +256,7 @@ exports[`src/lib/events getEventsFull should return events with calendar data fo
   },
   {
     "calendar": {
+      "accessRole": "owner",
       "description": "calendar 1 description",
       "hidden": false,
       "id": "id1",
@@ -255,10 +267,12 @@ exports[`src/lib/events getEventsFull should return events with calendar data fo
       "displayName": "calendar 1",
       "email": "id1",
     },
+    "status": "confirmed",
     "summary": "event 1",
   },
   {
     "calendar": {
+      "accessRole": "writer",
       "description": "calendar 2 description",
       "hidden": undefined,
       "id": "id2",
@@ -288,6 +302,7 @@ exports[`src/lib/events getEventsFull should return events with calendar data fo
   },
   {
     "calendar": {
+      "accessRole": "owner",
       "description": "calendar 1 description",
       "hidden": false,
       "id": "id1",
@@ -298,10 +313,12 @@ exports[`src/lib/events getEventsFull should return events with calendar data fo
       "displayName": "calendar 1",
       "email": "id1",
     },
+    "status": "confirmed",
     "summary": "event 1",
   },
   {
     "calendar": {
+      "accessRole": "writer",
       "description": "calendar 2 description",
       "hidden": undefined,
       "id": "id2",
@@ -336,6 +353,7 @@ exports[`src/lib/events getEventsFull should return events with calendar data on
 [
   {
     "calendar": {
+      "accessRole": "owner",
       "description": "calendar 1 description",
       "hidden": false,
       "id": "id1",
@@ -346,10 +364,12 @@ exports[`src/lib/events getEventsFull should return events with calendar data on
       "displayName": "calendar 1",
       "email": "id1",
     },
+    "status": "confirmed",
     "summary": "event 1",
   },
   {
     "calendar": {
+      "accessRole": "writer",
       "description": "calendar 2 description",
       "hidden": undefined,
       "id": "id2",
