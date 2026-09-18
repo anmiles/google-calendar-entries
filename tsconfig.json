@@ -4,4 +4,10 @@
 	"include" : [
 		"src",
 	],
+
+	"compilerOptions": {
+		"types": [
+			"jest",
+		],
+	},
 }
